@@ -25,9 +25,13 @@ func main() {
 
 	snrStreamer, format := createStream("snr")
 	kickStreamer, _ := createStream("kick")
-	hhStreamer, format := createStream("ch")
+	hhStreamer, _ := createStream("ch")
 
-	speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/30))
+	err := speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/25))
+
+	if err != nil {
+		fmt.Println("unable to initialise speaker")
+	}
 
 	snrBuffer := createBuffer(format, snrStreamer)
 	kickBuffer := createBuffer(format, kickStreamer)
@@ -41,6 +45,10 @@ func main() {
 	hhList := createPattern(233)
 
 	count := 1
+
+	fmt.Println("Setup complete, press any key to start...")
+	fmt.Scanln()
+
 	for {
 		counter := count % 8
 
@@ -57,9 +65,14 @@ func step(kList, sList, hhList string, kLit, sLit, hLit beep.StreamSeeker, i int
 		sItem == "1" &&
 		hItem == "1" {
 		fmt.Println("k s h")
-		kLit.Seek(0)
-		sLit.Seek(0)
-		hLit.Seek(0)
+
+		err := kLit.Seek(0)
+		err = sLit.Seek(0)
+		err = hLit.Seek(0)
+		if err != nil {
+			return
+		}
+
 		speaker.Play(kLit, sLit, hLit)
 	}
 
