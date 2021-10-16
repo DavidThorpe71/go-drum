@@ -73,6 +73,7 @@ void setup() {
   audioShield.volume(0.5);
 
   setupDrums();
+  knobTwo.write(600);
 }
 
 int positionOne = -999;
@@ -85,7 +86,7 @@ int positionTwo = -999;
 int counter = 0;
 
 //int mockBd = 199;
-//int mockSn = 65;
+int mockSn = 65;
 int mockHh = 200;
 int mockBdFill = 10;
 int mockSnFill = 4;
@@ -121,7 +122,7 @@ void loop() {
   int hhFill = mockHhFill ^ (mockHh & mockHhFill);
 
   if (metroOn) {
-    if (metro.hasPassed(150)) {
+    if (metro.hasPassed(snEncValue)) {
       metro.restart(); // Restart the chronometer.
 
       if (counter == 7) {
@@ -140,7 +141,7 @@ void loop() {
       }
 
       // Snares
-      if (bitRead(snEncValue, counter) == 1) {
+      if (bitRead(mockSn, counter) == 1) {
         drum2.noteOn();
       }
 
@@ -186,14 +187,6 @@ void HandleEncoders(int &enc1, int &enc2) {
 
   if (newOne <= 0) {
     knobOne.write(0);
-  }
-
-  if (newTwo >= 1020) {
-    knobTwo.write(1020);
-  }
-
-  if (newTwo <= 0) {
-    knobTwo.write(0);
   }
 
 
